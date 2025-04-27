@@ -1,24 +1,25 @@
-import sys
-import img2pdf
 import os
+import img2pdf
+import sys
 
-pdfname = os.getenv("PDF_NAME", default="output")
+# קבלת נתיב התמונות
+image_folder = sys.argv[1]
+images = [os.path.join(image_folder, f) for f in os.listdir(image_folder) if f.endswith(('jpg', 'jpeg', 'png'))]
 
-filepath = sys.argv[1]
-if os.path.isdir(filepath):
-    with open(f"output/{pdfname}.pdf", "wb") as f:
-        imgs = []
-        for fname in os.listdir(filepath):
-            if not fname.endswith(".JPG"):
-                continue
-            path = os.path.join(filepath, fname)
-            if os.path.isdir(path):
-                continue
-            imgs.append(path)
-        f.write(img2pdf.convert(imgs))
-elif os.path.isfile(filepath):
-    if filepath.endswith(".jpg"):
-        with open(f"output/{pdfname}.pdf", "wb") as f:
-            f.write(img2pdf.convert(filepath))
-else:
-    print("please input file or dir")
+# הדפסת שמות הקבצים של התמונות
+print(f"Found images: {images}")
+
+# אם אין תמונות
+if not images:
+    print("No images found!")
+    sys.exit(1)
+
+# המרת התמונות ל-PDF
+output_pdf = '/app/output/' + os.environ.get('PDF_NAME', 'output.pdf')
+with open(output_pdf, "wb") as f:
+    try:
+        f.write(img2pdf.convert(images))
+        print(f"PDF saved to {output_pdf}")
+    except Exception as e:
+        print(f"Error occurred while converting images: {e}")
+        sys.exit(1)

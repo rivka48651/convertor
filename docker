@@ -1,0 +1,25 @@
+:3.8-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install img2pdf
+
+COPY . .
+
+CMD ["python3", "convert_image_to_pdf.py"]
+FROM python:3.8-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install img2pdf
+
+COPY . .
+
+CMD ["python3", "convert_image_to_pdf.py"]
+
